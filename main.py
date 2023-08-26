@@ -26,7 +26,124 @@
 #data.writelines(tele03)
 #data.close()
 
-from loggers import find_data, new_data, correction_data, delete_data, change_line
+def find_data():
+    print('Введите номер файла: ') 
+    file_name = input()
+    data = open(file_name+'.txt', 'r', encoding='utf-8')
+    for line in data:
+        print(line)
+    data.close()
+
+def new_data():
+    print('Введите назание нового файла: ') 
+    new_file_name = str(input())
+    data = open(new_file_name+'.txt', 'w', encoding='utf-8')
+    print('Введите ФИО и номер телефона (+7) через пробел: ')
+    original_data = input()
+    data.write(original_data)
+    data.close()
+
+def correction_data():
+    print('Введите имя файла: ') 
+    file_name = input()
+    data = open(file_name+'.txt', 'r', encoding='utf-8')
+    print(data.read())
+    data.close()
+
+    data = open(file_name+'.txt', 'w', encoding='utf-8')
+    print('Введите новые ФИО и номер телефона (+7) через пробел: ')
+    original_data = input()
+    data.write(original_data)
+    data.close()
+
+def delete_data():
+    print('Введите имя файла, который Вы хотите удалить: ')
+    #data_first, data_second = print_data()
+    number_file = int(input('Введите номер файла: '))
+    while number_file != 1 and number_file != 2:
+        print('Повторите ввод')
+        number_file = int(input('Введите имя файла: '))
+    if number_file == 1:  
+        print("Какую именно запись по счету Вы хотите удалить?")
+        number_journal = int(input('Введите номер записи: '))
+        print(f'Удалить данную запись\n{data_first[number_journal - 1]}')
+        data_first = data_first[:number_journal - 1] + data_first[number_journal + 1:]
+        
+        with open('data_first_variant.csv', 'w', encoding='utf-8') as file:
+            file.write(''.join(data_first))
+            print('Изменения успешно сохранены!')
+    else:
+        print("Какую именно запись по счету Вы хотите удалить?")
+        number_journal = int(input('Введите номер записи: '))
+        
+        print(f'Удалить данную запись\n{data_second[number_journal - 1]}')
+        data_second = data_second[:number_journal] + data_second[number_journal + 1:]
+        with open('data_second_variant.csv', 'w', encoding='utf-8') as file:
+            file.write(''.join(data_second))
+        print('Изменения успешно сохранены!') 
+
+def change_line(dataFile, numberRow, numberFile):
+    answer = input(f"Изменить данную запись\n{dataFile[numberRow]}?\n Введите ответ: ")
+    while answer != 'да':
+        numberRow = int(input('Введите номер записи: '))
+        numberRow -= 1
+
+    print(f"Меняем данную запись\n{dataFile[numberRow]}")
+    if numberFile == 1:
+        name = dataFile[numberRow].split('\n')[0]
+        surname = dataFile[numberRow].split('\n')[1]
+        phone = dataFile[numberRow].split('\n')[2]
+        address = dataFile[numberRow].split('\n')[3]
+    if numberFile == 2:
+        name = dataFile[numberRow].split(';')[0]
+        surname = dataFile[numberRow].split(';')[1]
+        phone = dataFile[numberRow].split(';')[2]
+        address = dataFile[numberRow].split(';')[3]
+
+    answer = int(input(f"Какие данные Вы хотите поменять?\n"
+                       f"1. Имя\n"
+                       f"2. Фамилия\n"
+                       f"3. Номер телефона\n"
+                       f"4. Адрес\n"
+                       f"Введите ответ: "))
+    while answer < 1 or answer > 4:
+        print("Вы ошиблись!\nВведите корректный номер от 1 до 4")
+        answer = int(input(f"Какие данные Вы хотите поменять?\n"
+                           f"1. Имя\n"
+                           f"2. Фамилия\n"
+                           f"3. Номер телефона\n"
+                           f"4. Адрес\n"
+                           f"Введите ответ: "))
+    if answer == 1:
+        name = name_data()
+    elif answer == 2:
+        surname = surname_data()
+    elif answer == 3:
+        phone = phone_data()
+    elif answer == 4:
+        address = address_data()
+
+    if numberFile == 1:
+        data_first = dataFile[:numberRow] + [f'{name}\n{surname}\n{phone}\n{address}'] + \
+                     dataFile[numberRow + 1:]
+        if numberRow + 1 == len(dataFile):
+            data_first = dataFile[:numberRow] + [f'{name}\n{surname}\n{phone}\n{address}\n']
+        with open('data_first_variant.csv', 'w', encoding='utf-8') as file:
+            file.write(''.join(data_first))
+        print('Изменения успешно сохранены!')
+    else:
+        data_second = dataFile[:numberRow] + [f'{name};{surname};{phone};{address}'] + \
+                      dataFile[numberRow + 1:]
+        if numberRow + 1 == len(dataFile):
+            data_second = dataFile[:numberRow] + [f'{name}\n{surname}\n{phone}\n{address}\n'] + \
+                         dataFile[numberRow + 1:]
+        with open('data_second_variant.csv', 'w', encoding='utf-8') as file:
+            file.write(''.join(data_second))
+        print('Изменения успешно сохранены!')
+
+
+
+#from loggers import find_data, new_data, correction_data, delete_data, change_line
 
 def interface():
     print('Здравствуйте')
@@ -54,8 +171,9 @@ def interface():
         elif command == 6:
             print('всего доброго!')
             return
-        
-interface()
+
+if __name__ == '__main__':      
+    interface()
 
 
 
